@@ -2,7 +2,7 @@ const MAX_PLAYERS = 6;
 const BIG_BLIND = 0.05;
 const SMALL_BLIND = 0.02;
 
-let getWindowDom = () => {
+let getWindowDOM = () => {
   return document.querySelector('[data-qa="table"]');
 };
 
@@ -15,7 +15,8 @@ let getPlayerDOM = (i) => {
 };
 
 let getPlayerBet = (i) => {
-  return getPlayerDOM(i).querySelector(".flytr4").innerText;
+  betDOM = getPlayerDOM(i).querySelector(".flytr4");
+  return betDOM ? betDOM.innerText : null;
 };
 
 let getCurrentStreet = () => {
@@ -70,7 +71,30 @@ let getActionPosition = () => {
     if (getPlayerDOM(i).querySelector(".fghgvzm") != null) return i;
   }
   return -1;
+};
+
+let getSittingOutPlayers = () => {
+  let players = [];
+  for (let i = 0; i < MAX_PLAYERS; i++) {
+    if (getPlayerDOM(i).querySelector('.f1p7lubp').innerText != "SITTING OUT") {
+      players.push(i);
+    }
+  }
+  return players;
 }
+
+let getEmptySeats = () => {
+  let players = [];
+  for (let i = 0; i < MAX_PLAYERS; i++) {
+    if (
+      getPlayerDOM(0).querySelector('[data-qa="player-empty-seat-panel"]') !=
+      null
+    ) {
+      players.push(i);
+    }
+  }
+  return players;
+};
 
 let BTNPosition = getBTNPosition();
 let SBPosition = -1;
@@ -91,18 +115,34 @@ const observer = new MutationObserver((mlist, obs) => {
     console.log("New street:", currentStreet);
   }
 
-  if ((currentStreet == "preflop") && (getSBPosition() != SBPosition)) {
+  if (currentStreet == "preflop" && getSBPosition() != SBPosition) {
     SBPosition == getSBPosition();
     console.log("SB Position:", SBPosition);
   }
 
-  if ((currentStreet == "preflop") && (getBBPosition() != SBPosition)) {
+  if (currentStreet == "preflop" && getBBPosition() != SBPosition) {
     BBPosition == getBBPosition();
     console.log("BB Position:", BBPosition);
   }
 
-  if ((getActionPosition() != currentActionOn)) {
+  if (getActionPosition() != currentActionOn) {
+    let lastActionOn = currentActionOn;
     currentActionOn = getActionPosition();
+
     console.log("Action on", currentActionOn);
+    console.log("Last player bet", getPlayerBet(lastActionOn));
   }
 });
+
+let startObserver = () => {
+  let root = getWindowDOM();
+  observer.observe(root, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+  });
+};
+
+let stopObersver = () => {
+  observer.disconnect();
+};
