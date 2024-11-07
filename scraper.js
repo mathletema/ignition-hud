@@ -310,6 +310,14 @@ Game.prototype.handleBannerChange = function () {
       case "ALL-IN":
         console.log(`player ${i} goes all in`);
         deque(i);
+      case "DON'T SHOW":
+        console.log(`player ${i} mucks`);
+        deque(i);
+      case "SITTING OUT":
+        console.log(`player ${i} is sitting out`);
+        if (this.actionQueue[0] == i) deque(i);
+      case "NEW PLAYER":
+        console.log(`player ${i} just joined`);
       default:
         console.log(`player ${i}, unknown action ${newBanner}`);
         break;
