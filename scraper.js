@@ -169,6 +169,7 @@ class Game {
     this.currentStreet = null;
 
     this.gameState = "reset";
+    this.actionQueue = [];
 
     this.observer = new MutationObserver((mlist, obs) => {
       this.handleBTNMove();
@@ -254,19 +255,30 @@ Game.prototype.handleActionMove = function () {
   if (newActionOn == this.currentActionOn) return;
   if (newActionOn == -1) return;
   this.currentActionOn = newActionOn;
-
-  console.log("action on", newActionOn);
+  this.actionQueue.push(newActionOn);
+  console.log("Action queue", this.actionQueue);
 };
 
 Game.prototype.handleBannerChange = function () {
   for (let i = 0; i < MAX_PLAYERS; i++) {
     let newBanner = getSeatBanner(i);
     if (newBanner == this.banners[i]) continue;
+
+    if (this.banners[i] == "SITTING OUT") {
+      console.log(`player ${i} back from sitting out`)
+    }
+
     this.banners[i] = newBanner;
     if (newBanner == "") continue;
 
     rounds = this.currentHand.rounds;
     curRound = rounds[rounds.length - 1];
+
+    let deque = ((i) => {
+      if (this.actionQueue[0] != i) console.log(`Action queue should have ${i} at head, but instead is ${this.actionQueue}`);
+      this.actionQueue.shift()
+      console.log("Action queue", this.actionQueue);
+    }).bind(this)
 
     switch (newBanner) {
       case "POST SB":
@@ -277,21 +289,27 @@ Game.prototype.handleBannerChange = function () {
         break;
       case "FOLD":
         console.log(`player ${i} folds`);
+        deque(i);
         break;
       case "CHECK":
         console.log(`player ${i} checks`);
+        deque(i);
         break;
       case "CALL":
         console.log(`player ${i} calls ${getPlayerBet(i)}`);
+        deque(i);
         break;
       case "BET":
         console.log(`player ${i} bets ${getPlayerBet(i)}`);
+        deque(i);
         break;
       case "RAISE":
         console.log(`player ${i} raise ${getPlayerBet(i)}`);
+        deque(i);
         break;
       case "ALL-IN":
         console.log(`player ${i} goes all in`);
+        deque(i);
       default:
         console.log(`player ${i}, unknown action ${newBanner}`);
         break;
@@ -300,6 +318,7 @@ Game.prototype.handleBannerChange = function () {
 };
 
 Game.prototype.handleNewStreet = function () {
+  if (this.actionQueue.length > 0) return;
   let newStreet = getCurrentStreet();
   if (newStreet == this.currentStreet) return;
   this.currentStreet = newStreet;
