@@ -330,6 +330,7 @@ Game.prototype.handleNewStreet = function () {
   let newStreet = getCurrentStreet();
   if (newStreet == this.currentStreet) return;
   this.currentStreet = newStreet;
+  this.currentActionOn = -1;
   switch (newStreet) {
     case "preflop":
       console.log("preflop");
