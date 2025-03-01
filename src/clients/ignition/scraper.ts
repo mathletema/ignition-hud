@@ -3,6 +3,6 @@ export class Scraper {
     }
 
     run() {
-        console.log("Scraper has started!");
+        alert("Hi we're cooking")
     }
 }

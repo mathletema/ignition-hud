@@ -1,21 +1,24 @@
 {
   "manifest_version": 3,
   "name": "Ignition-HUD",
-  "version": "1.0",
   "description": "HUD for ignition",
-  "content_scripts": [
-    {
-      "js": ["worker.js"],
-      "matches": [
-        "https://developer.chrome.com/docs/extensions/*",
-        "https://ignitioncasino.eu/*"
-      ]
-    }
-  ],
+  "version": "1.0",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+  "background": {
+    "service_worker": "worker.js"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "permissions": ["scripting", "activeTab"]
 }
