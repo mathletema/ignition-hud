@@ -1,0 +1,16 @@
+{
+  "name": "ignition-hud",
+  "version": "1.0.0",
+  "main": "scraper.js",
+  "scripts": {
+    "build-ignition": "tsc --noEmit && esbuild 'src/clients/ignition/main.ts' --bundle --outfile=build/ignition-hud/worker.js && cp ignition-manifest.json build/ignition-hud/manifest.json && cp -R icons/ignition build/ignition-hud/icons"
+  },
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "esbuild": "^0.25.0",
+    "eslint": "^9.21.0",
+    "typescript": "^5.8.2"
+  }
+}
