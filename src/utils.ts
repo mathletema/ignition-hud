@@ -1,0 +1,1 @@
+export const DOM_FINGERPRINT = "ignition_hud";

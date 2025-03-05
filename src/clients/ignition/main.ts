@@ -1,33 +1,16 @@
-import { inLobby } from "./setup";
-import { Scraper } from "./scraper";
+import { Display } from "./display";
+import { getWindowDOM } from "./dom";
+import { HUD } from "./hud";
+import { Observer } from "./observer";
 
+function main ():void {
+    // don't run on children iframes
+    if (window.self! !== window.top) return;
+    if (document.querySelectorAll('iframe[title="Table slot"][data-multitableslot]').length == 0) return;
+    const display = new Display();
+    const hud = new HUD(display);
+    const observer = new Observer(hud, getWindowDOM()!);
+    observer.observe();
+}
 
-const ignitionURL = 'https://ignitioncasino.eu';
-
-chrome.runtime.onInstalled.addListener(() => {
-    chrome.action.setBadgeText({
-        text: 'OFF'
-    });
-});
-
-chrome.action.onClicked.addListener(async (tab) => {
-    if (tab.url!.startsWith(ignitionURL)) {
-        const prevState = await chrome.action.getBadgeText({ tabId: tab.id });
-        const nextState = prevState === 'ON' ? 'OFF' : 'ON';
-
-        await chrome.action.setBadgeText({
-            tabId: tab.id,
-            text: nextState
-        });
-
-        chrome.scripting.executeScript({
-            target: { tabId: tab.id! },
-            func: () => {
-                if (inLobby()) {
-                    const scraper = new Scraper();
-                    scraper.run();
-                }
-            }
-          });
-    }
-});
+main();
