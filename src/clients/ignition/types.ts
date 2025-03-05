@@ -15,6 +15,7 @@ export enum HUDEventType {
     PlayerSittingOut,
     PlayerBackIn,
     Other,
+    PutInPot,
 }
 
 export type HUDEvent = {

@@ -12,6 +12,31 @@ export function getTotalPot () : number {
     return Number.parseFloat(span.innerText.split('$')[1]!);
 }
 
+export function seenFlop () : boolean {
+    const flopHolder = getTableIframe()!.querySelectorAll("[data-qa='card-placeholder']")[0]!.parentElement!;
+    return flopHolder.style.visibility === "hidden";
+}
+
+
+export function playerContainerDOM (seat: number) {
+    const div: HTMLDivElement = getTableIframe().querySelector(`div[data-qa="playerContainer-${seat}"]`)!;
+    return div;
+}
+
+export function playerBanner (seat: number) {
+    const div: HTMLDivElement | null = playerContainerDOM(seat).querySelector('.ffnz569');
+    if (div === null) return "";
+    if (div.parentElement?.parentElement?.style.opacity === '0') return "";
+    return div.innerText;
+}
+
+export function playerPutsIn (seat: number) {
+    const div: HTMLDivElement | null = playerContainerDOM(seat).querySelector('.flytr4');
+    if (div === null) return 0;
+    const res = Number.parseFloat(div.innerText.split('$')[1]!);
+    return Number.isNaN(res) ? 0 : res;
+}
+
 // let getCommunityDOM = () => {
 //     return document.querySelector(".f34l2e8");
 // };
